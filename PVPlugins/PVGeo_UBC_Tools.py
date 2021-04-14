@@ -7,12 +7,13 @@ from paraview.util.vtkAlgorithm import smdomain, smhint, smproperty, smproxy
 # Helpers:
 from PVGeo import _helpers
 # Classes to Decorate
-from PVGeo.ubc import (TensorMeshAppender, TensorMeshReader, DiscretizeMeshReader, GeologyMapper, MagObsReader, GravGradReader, GravObsReader, TopoReader, WriteImageDataToUBC, WriteRectilinearGridToUBC, OcTreeAppender, OcTreeReader, TopoMeshAppender)
+from PVGeo.ubc import (TensorMeshAppender, TensorMeshReader, GeologyMapper, MagObsReader, GravGradReader, GravObsReader, TopoReader, WriteImageDataToUBC, WriteRectilinearGridToUBC, TopoMeshAppender)
 
 discretize_available = False
 try:
     with _helpers.HiddenPrints():
         import discretize
+        from PVGeo.ubc import DiscretizeMeshReader, OcTreeReader, OcTreeAppender
 except ImportError:
     pass
 else:
@@ -23,9 +24,7 @@ MENU_CAT = 'PVGeo: UBC Mesh Tools'
 
 
 
-@smproxy.reader(name="PVGeoTensorMeshReader",
-                label='PVGeo: %s' % TensorMeshReader.__displayname__,
-                extensions=TensorMeshReader.extensions,
+@smproxy.reader(extensions=TensorMeshReader.extensions,
                 file_description=TensorMeshReader.description)
 @smhint.xml('''<RepresentationType view="RenderView" type="Surface With Edges" />''')
 class PVGeoTensorMeshReader(TensorMeshReader):
@@ -167,9 +166,7 @@ class PVGeoTopoMeshAppender(TopoMeshAppender):
 #------------------------------------------------------------------------------
 
 if discretize_available:
-    @smproxy.reader(name="PVGeoUBCOcTreeMeshReader",
-                    label='PVGeo: %s' % OcTreeReader.__displayname__,
-                    extensions=OcTreeReader.extensions,
+    @smproxy.reader(extensions=OcTreeReader.extensions,
                     file_description=OcTreeReader.description)
     @smhint.xml('''<RepresentationType view="RenderView" type="Surface With Edges" />''')
     class PVGeoUBCOcTreeMeshReader(OcTreeReader):
@@ -318,9 +315,7 @@ class PVGeoWriteImageDataToUBC(WriteImageDataToUBC):
 ###############################################################################
 
 
-@smproxy.reader(name="PVGeoTopoReader",
-                label='PVGeo: %s' % TopoReader.__displayname__,
-                extensions=TopoReader.extensions,
+@smproxy.reader(extensions=TopoReader.extensions,
                 file_description=TopoReader.description)
 class PVGeoTopoReader(TopoReader):
     def __init__(self):
@@ -353,9 +348,7 @@ class PVGeoTopoReader(TopoReader):
 ###############################################################################
 
 
-@smproxy.reader(name="PVGeoGravObsReader",
-                label='PVGeo: %s' % GravObsReader.__displayname__,
-                extensions=GravObsReader.extensions,
+@smproxy.reader(extensions=GravObsReader.extensions,
                 file_description=GravObsReader.description)
 class PVGeoGravObsReader(GravObsReader):
     def __init__(self):
@@ -387,9 +380,7 @@ class PVGeoGravObsReader(GravObsReader):
 ###############################################################################
 
 
-@smproxy.reader(name="PVGeoGravGradReader",
-                label='PVGeo: %s' % GravGradReader.__displayname__,
-                extensions=GravGradReader.extensions,
+@smproxy.reader(extensions=GravGradReader.extensions,
                 file_description=GravGradReader.description)
 class PVGeoGravGradReader(GravGradReader):
     def __init__(self):
@@ -422,9 +413,7 @@ class PVGeoGravGradReader(GravGradReader):
 ###############################################################################
 
 
-@smproxy.reader(name="PVGeoMagObsReader",
-                label='PVGeo: %s' % MagObsReader.__displayname__,
-                extensions=MagObsReader.extensions,
+@smproxy.reader(extensions=MagObsReader.extensions,
                 file_description=MagObsReader.description)
 class PVGeoMagObsReader(MagObsReader):
     def __init__(self):
@@ -456,7 +445,7 @@ class PVGeoMagObsReader(MagObsReader):
 ###############################################################################
 
 
-@smproxy.filter(name='PVGeoGeologyMapper', label=GeologyMapper.__displayname__)
+@smproxy.filter()
 @smhint.xml('''<ShowInMenu category="%s"/>
     <RepresentationType view="RenderView" type="Surface" />''' % MENU_CAT)
 @smproperty.input(name="Input", port_index=0)
@@ -494,9 +483,7 @@ class PVGeoGeologyMapper(GeologyMapper):
 
 
 if discretize_available:
-    @smproxy.reader(name="PVGeoDiscretizeMeshReader",
-                    label='PVGeo: %s' % DiscretizeMeshReader.__displayname__,
-                    extensions=DiscretizeMeshReader.extensions,
+    @smproxy.reader(extensions=DiscretizeMeshReader.extensions,
                     file_description=DiscretizeMeshReader.description)
     class PVGeoDiscretizeMeshReader(DiscretizeMeshReader):
         def __init__(self):
